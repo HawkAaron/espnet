@@ -175,7 +175,7 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     sed -i 's/\._/ /g; s/\.//g; s/them_1/them/g' data/${train_set}/text
     # convert text to chars
     text2token.py -s 1 -n 1 -l ${nlsyms} data/${train_set}/text | cut -f 2- -d" " | tr " " "\n" \
-    | sort | uniq | grep -v -e '^\s*$' | awk '{print $0 " " NR}' >> ${dict}
+    | sort | uniq | grep -v -e '^\s*$' | awk '{print $0 " " NR}' > ${dict}
     wc -l ${dict}
 
     echo "make json files"
