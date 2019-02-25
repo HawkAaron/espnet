@@ -168,9 +168,14 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     cat ${nlsyms}
 
     echo "make a dictionary"
-    echo "<unk> 1" > ${dict} # <unk> must be 1, 0 will be used for "blank" in CTC
+    # NOTE we don't use <unk>, and we map p._h._d. to p h d
+    # echo "<unk> 1" > ${dict} # <unk> must be 1, 0 will be used for "blank" in CTC
+    cp data/${train_set}/text data/${train_set}/text.backup
+    # acronyms mapping
+    sed -i 's/\._/ /g; s/\.//g; s/them_1/them/g' data/${train_set}/text
+    # convert text to chars
     text2token.py -s 1 -n 1 -l ${nlsyms} data/${train_set}/text | cut -f 2- -d" " | tr " " "\n" \
-    | sort | uniq | grep -v -e '^\s*$' | awk '{print $0 " " NR+1}' >> ${dict}
+    | sort | uniq | grep -v -e '^\s*$' | awk '{print $0 " " NR}' >> ${dict}
     wc -l ${dict}
 
     echo "make json files"
